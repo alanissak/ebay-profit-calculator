@@ -13,6 +13,7 @@ category_fees = {
     'Musical Instruments & Gear > Guitars & Basses': [0.0635, 0.0235, 7500],
     'Select Clothing, Shoes & Accessories categories': [0.1325, 0, 0]
 }
+
 # Define the function to calculate the profit
 def calculate_profit():
     try:
@@ -21,7 +22,7 @@ def calculate_profit():
         item_cost = float(item_cost_entry.get())
         shipping_cost = float(shipping_cost_entry.get())
         promotional_cost = float(promotional_cost_entry.get())/100
-        
+
         # Calculate the eBay fee based on the selected category
         category = category_var.get()
         category_fee = category_fees[category]
@@ -29,27 +30,25 @@ def calculate_profit():
             ebay_fee = selling_price * category_fee[0]
         else:
             ebay_fee = category_fee[2] * category_fee[0] + (selling_price - category_fee[2]) * category_fee[1]
-        
+
         # Calculate the profit and profit percentage
         profit = selling_price - item_cost - shipping_cost - selling_price * promotional_cost - ebay_fee
-        profit_percentage = profit/selling_price * 100
-        
+        profit_percentage = profit / selling_price * 100
+
         # Display the profit and profit percentage in the output label
         output_label.config(text=f"Profit: ${profit:.2f}\nProfit Percentage: {profit_percentage:.2f}%")
-        
-        # Display the breakdown of the math in the terminal
-        print(f"Selling Price: ${selling_price:.2f}")
-        print(f"Item Cost: ${item_cost:.2f}")
-        print(f"Shipping Cost: ${shipping_cost:.2f}")
-        print(f"Promotional Cost: {promotional_cost*100:.2f}%")
-        print(f"eBay Fee: ${ebay_fee:.2f}")
-        print(f"Profit: ${profit:.2f}")
-        print(f"Profit Percentage: {profit_percentage:.2f}%")
-        
+
+        # Clear the terminal and display the breakdown of the math
+        terminal_text.delete('1.0', tk.END)
+        terminal_text.insert(tk.END, f"Selling Price: ${selling_price:.2f}\n")
+        terminal_text.insert(tk.END, f"Item Cost: ${item_cost:.2f}\n")
+        terminal_text.insert(tk.END, f"Shipping Cost: ${shipping_cost:.2f}\n")
+        terminal_text.insert(tk.END, f"Promotional Cost: {promotional_cost * 100:.2f}% (${selling_price * promotional_cost:.2f})\n")
+        terminal_text.insert(tk.END, f"eBay Fee: ${ebay_fee:.2f}\n")
+        terminal_text.insert(tk.END, f"Subtractions: ${selling_price:.2f} - ${item_cost:.2f} - ${shipping_cost:.2f} - ${selling_price * promotional_cost:.2f} - ${ebay_fee:.2f} = ${profit:.2f}\n")
     except ValueError:
         # Display an error message if the input values are invalid
         output_label.config(text="Please enter valid numbers for all fields")
-
 
 # Create a GUI with a dropdown list of categories and input fields for the selling price, item cost, shipping cost, and promotional cost
 root = tk.Tk()
@@ -101,12 +100,16 @@ terminal_text.pack(side="top", fill="both", expand=True)
 
 # Redirect stdout to the terminal
 import sys
+
 class StdoutRedirector:
     def __init__(self, text_widget):
         self.text_widget = text_widget
+
     def write(self, str):
         self.text_widget.insert("end", str)
         self.text_widget.see("end")
+
 sys.stdout = StdoutRedirector(terminal_text)
 
 root.mainloop()
+
