@@ -32,7 +32,7 @@ def calculate_profit():
             ebay_fee = category_fee[2] * category_fee[0] + (selling_price - category_fee[2]) * category_fee[1]
 
         # Calculate the profit and profit percentage
-        profit = selling_price - item_cost - shipping_cost - selling_price * promotional_cost - ebay_fee
+        profit = selling_price - item_cost - shipping_cost - (selling_price * promotional_cost) - ebay_fee
         profit_percentage = profit / selling_price * 100
 
         # Display the profit and profit percentage in the output label
